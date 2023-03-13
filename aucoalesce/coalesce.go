@@ -218,9 +218,10 @@ func normalizeCompound(msgs []*auparse.AuditMessage) (*Event, error) {
 			break
 		}
 	}
-	if syscall == nil {
-		// All compound records have syscall messages.
-		return nil, errors.New("missing syscall message in compound event")
+	if special == nil && syscall == nil {
+		return nil, &CompoundEventError{
+			message: "compound event's special and syscall audit messages are nil",
+		}
 	}
 
 	event := newEvent(special, syscall)
